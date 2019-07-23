@@ -1,0 +1,54 @@
+
+  @Group("netifi.acme.errors")
+  ErrorServiceClient errorServiceClient;
+
+   int total =
+          errorServiceClient
+              .countErrors(
+                  ErrorsRequest.newBuilder()
+                      .setWindowInMillis(1000)
+                      .setWindowSize(10_000)
+                      .setDuration(5_000)
+                      .build())
+              .block()
+              .getTotal();
+
+
+              package com.netifi.acme;
+
+              import com.netifi.spring.core.annotation.Group;
+              import org.springframework.boot.CommandLineRunner;
+
+              public class ClientCommandLineRunner implements CommandLineRunner {
+                @Group("netifi.acme.errors")
+                ErrorServiceClient errorServiceClient;
+
+                @Override
+                public void run(String... args) throws Exception {
+
+                  System.out.println();
+                  System.out.println();
+                  System.out.println("Getting Errors for the Last 15 seconds");
+                  System.out.println();
+                  System.out.println();
+
+                  int total =
+                      errorServiceClient
+                          .countErrors(
+                              ErrorsRequest.newBuilder()
+                                  .setWindowInMillis(1000)
+                                  .setWindowSize(10_000)
+                                  .setDuration(5_000)
+                                  .build())
+                          .block()
+                          .getTotal();
+
+                  System.out.println();
+                  System.out.println();
+                  System.out.println("Total Errors -> " + total);
+                  System.out.println();
+                  System.out.println();
+
+                  System.exit(0);
+                }
+              }

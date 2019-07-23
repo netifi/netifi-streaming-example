@@ -50,7 +50,7 @@ public class DefaultAggregatorService implements AggregatorService {
 
                                                   return builder;
                                                 })
-                                            .delayElement(Duration.ofSeconds(1)))))
+                                            .delayElement(Duration.ofMillis(1)))))
         .map(AggregateTotal.Builder::build);
   }
 }
