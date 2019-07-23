@@ -8,7 +8,7 @@ dependencies {
 }
 
 jar {
-    exclude('com/netifi/acmeair/Blocking**')
+    exclude('com/netifi/acme/Blocking**')
 }
 
 sourceSets {

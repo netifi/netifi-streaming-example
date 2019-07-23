@@ -8,6 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.time.Duration;
 
 @Component
 public class DefaultParserService implements ParserService {
@@ -18,8 +21,10 @@ public class DefaultParserService implements ParserService {
 
   @Override
   public Flux<ParserResponse> parseLogs(Empty message, ByteBuf metadata) {
+    // No Delay
     return logService
         .streamLogs(message)
+        .limitRate(8)
         .map(
             logResponse -> {
               String customerId = getCustomerId(logResponse.getMessage());
@@ -30,6 +35,23 @@ public class DefaultParserService implements ParserService {
                   .setResponse(logResponse)
                   .build();
             });
+    /*
+    // Delay
+    return logService
+        .streamLogs(message)
+        .flatMap(
+            logResponse ->
+                Mono.delay(Duration.ofSeconds(1))
+                    .map(
+                        l -> {
+                          String customerId = getCustomerId(logResponse.getMessage());
+                          String productId = getProductId(logResponse.getMessage());
+                          return ParserResponse.newBuilder()
+                              .setCustomerId(customerId)
+                              .setProductId(productId)
+                              .setResponse(logResponse)
+                              .build();
+                        }));*/
   }
 
   @Override

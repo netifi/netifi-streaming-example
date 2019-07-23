@@ -15,8 +15,9 @@ public class DefaultAggregatorService implements AggregatorService {
 
   @Override
   public Flux<AggregateTotal> aggregateStream(AggregateStreamRequest message, ByteBuf metadata) {
-    final int maxSize = Math.max(100, message.getWindowSize());
-    final Duration maxTime = Duration.ofMillis(Math.max(250, message.getWindowInMillis()));
+    final int maxSize = Math.max(10, message.getWindowSize());
+    final Duration maxTime = Duration.ofMillis(Math.max(10, message.getWindowInMillis()));
+
     return parserServiceClient
         .parseLogs(Empty.getDefaultInstance())
         .windowTimeout(maxSize, maxTime)
@@ -34,20 +35,22 @@ public class DefaultAggregatorService implements AggregatorService {
                                 .flatMap(
                                     productGroup ->
                                         // Aggregate total messages and errors in the window
-                                        productGroup.reduceWith(
-                                            () ->
-                                                AggregateTotal.newBuilder()
-                                                    .setCustomerId(customerGroup.key())
-                                                    .setProductId(productGroup.key()),
-                                            (builder, parserResponse) -> {
-                                              builder.setTotal(builder.getTotal() + 1);
-                                              if (parserResponse.getResponse().getLevel()
-                                                  == LogLevel.ERROR) {
-                                                builder.setErrors(builder.getErrors() + 1);
-                                              }
+                                        productGroup
+                                            .reduceWith(
+                                                () ->
+                                                    AggregateTotal.newBuilder()
+                                                        .setCustomerId(customerGroup.key())
+                                                        .setProductId(productGroup.key()),
+                                                (builder, parserResponse) -> {
+                                                  builder.setTotal(builder.getTotal() + 1);
+                                                  if (parserResponse.getResponse().getLevel()
+                                                      == LogLevel.ERROR) {
+                                                    builder.setErrors(builder.getErrors() + 1);
+                                                  }
 
-                                              return builder;
-                                            }))))
+                                                  return builder;
+                                                })
+                                            .delayElement(Duration.ofSeconds(1)))))
         .map(AggregateTotal.Builder::build);
   }
 }

@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package com.netifi.acme;
+
+import "google/protobuf/empty.proto";
+
+option java_package = "com.netifi.acme";
+option java_outer_classname = "ErrorProto";
+option java_multiple_files = true;
+
+service ErrorService {
+    rpc CountErrors (ErrorsRequest) returns (ErrorResponse) {}
+}
+
+message ErrorsRequest {
+  int32 duration = 1;
+  int32 windowInMillis = 2;
+  int32 windowSize = 3;
+}
+
+message ErrorResponse {
+  int32 total = 1;
+}
