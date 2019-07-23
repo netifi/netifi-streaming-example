@@ -10,11 +10,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
 public class DefaultErrorService implements ErrorService {
+  
   @Group("netifi.acme.aggregator")
   AggregatorServiceClient client;
 
   @Override
   public Mono<ErrorResponse> countErrors(ErrorsRequest message, ByteBuf metadata) {
+    System.out.println(">>>>>>>>>>>>>>>> counting errors");
     return client
         .aggregateStream(
             AggregateStreamRequest.newBuilder()

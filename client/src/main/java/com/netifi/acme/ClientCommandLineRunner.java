@@ -1,6 +1,9 @@
 package com.netifi.acme;
 
 import com.netifi.spring.core.annotation.Group;
+import io.netty.buffer.Unpooled;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 
 import java.time.Duration;
@@ -8,8 +11,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class ClientCommandLineRunner implements CommandLineRunner {
-  @Group("netifi.acme.aggregator")
-  AggregatorServiceClient client;
+  @Autowired
+  @Qualifier("localErrorService")
+  ErrorService errorService;
 
   @Override
   public void run(String... args) throws Exception {
@@ -21,22 +25,16 @@ public class ClientCommandLineRunner implements CommandLineRunner {
     System.out.println();
 
     int total =
-        client
-            .aggregateStream(
-                AggregateStreamRequest.newBuilder()
+        errorService
+            .countErrors(
+                ErrorsRequest.newBuilder()
                     .setWindowInMillis(1000)
                     .setWindowSize(10_000)
-                    .build())
-            .take(Duration.ofSeconds(15))
-            .reduce(
-                new AtomicInteger(),
-                (o, aggregateTotal) -> {
-                  o.getAndAdd(aggregateTotal.getErrors());
-                  return o;
-                })
-            .retry()
+                    .setDuration(5_000)
+                    .build(),
+                Unpooled.EMPTY_BUFFER)
             .block()
-            .get();
+            .getTotal();
 
     System.out.println();
     System.out.println();

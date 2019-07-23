@@ -1,3 +1,4 @@
+@Group("netifi.acme.errors")
 
   @Group("netifi.acme.errors")
   ErrorServiceClient errorServiceClient;
