@@ -1,0 +1,11 @@
+rootProject.name = 'netifi-streaming-example'
+
+include 'aggregator'
+include 'aggregator-idl'
+include 'errors'
+//include 'errors-idl'
+include 'logs'
+include 'logs-idl'
+//include 'product-a-idl'
+include 'parser'
+include 'parser-idl'

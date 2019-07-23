@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package com.netifi.acme;
+
+import "google/protobuf/empty.proto";
+
+option java_package = "com.netifi.acme";
+option java_outer_classname = "AggregatorProto";
+option java_multiple_files = true;
+
+service AggregatorService {
+    rpc aggregateStream(AggregateStreamRequest) returns (stream AggregateTotal) {}
+}
+
+message AggregateStreamRequest {
+  int32 windowInMillis = 1;
+  int32 windowSize = 2;
+}
+
+message AggregateTotal {
+  string customerId = 1;
+  string productId = 2;
+  int32  errors = 3;
+  int32 total = 4;
+}
+

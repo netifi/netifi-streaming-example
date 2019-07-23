@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package com.netifi.acme;
+
+import "google/protobuf/empty.proto";
+
+option java_package = "com.netifi.acme";
+option java_outer_classname = "LogsProto";
+option java_multiple_files = true;
+
+service LogService {
+    rpc StreamLogs (google.protobuf.Empty) returns (stream LogResponse) {}
+}
+
+enum LogLevel {
+  INFO = 0;
+  DEBUG = 1;
+  ERROR = 2;
+}
+
+message LogResponse {
+  LogLevel level = 1;
+  string message = 2;
+}
