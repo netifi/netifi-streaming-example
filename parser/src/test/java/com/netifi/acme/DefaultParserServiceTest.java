@@ -10,6 +10,8 @@ import static org.junit.Assert.*;
 public class DefaultParserServiceTest {
   @Test
   public void test() {
+    LogServiceClient client = null; // <- mock
+    
     //String matcher = "(?<=is \\()(.*?)(?=\\s*\\))"
     /*
     /begin.*?end/s

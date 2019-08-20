@@ -19,10 +19,6 @@ subprojects {
         dependencies {
             dependency "com.google.protobuf:protobuf-java:${protobufVersion}"
             dependency "com.google.protobuf:protoc:${protobufVersion}"
-            dependency "io.rsocket.rpc:rsocket-rpc-protobuf:${rsocketRpcVersion}"
-            dependency "io.rsocket.rpc:rsocket-rpc-core:${rsocketRpcVersion}"
-            dependency "io.rsocket:rsocket-core:${rsocketVersion}"
-            dependency "io.rsocket:rsocket-transport-netty:${rsocketVersion}"
             dependency "io.netty:netty-tcnative-boringssl-static:${nettyTcnativeVersion}"
             dependency "io.netty:netty-tcnative:${nettyTcnativeVersion}"
 

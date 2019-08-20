@@ -5,14 +5,16 @@ import io.netty.buffer.Unpooled;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
+import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class ClientCommandLineRunner implements CommandLineRunner {
-  @Autowired
-  @Qualifier("localErrorService")
+  //  @Autowired
+  //  @Qualifier("localErrorService")
+  @Group("netifi.acme.errors")
   ErrorService errorService;
 
   @Override
@@ -33,6 +35,11 @@ public class ClientCommandLineRunner implements CommandLineRunner {
                     .setDuration(5_000)
                     .build(),
                 Unpooled.EMPTY_BUFFER)
+            .retry(3)
+            .onErrorResume(
+                throwable -> {
+                  return Mono.just(ErrorResponse.newBuilder().setTotal(1000).build());
+                })
             .block()
             .getTotal();
 
